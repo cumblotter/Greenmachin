@@ -8,14 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Clonar el repositorio
+      # 1️⃣ Clonar repositorio
       - uses: actions/checkout@v3
 
-      # 2️⃣ Instalar gdown
+      # 2️⃣ Instalar gdown para descargar tu ZIP de Drive
       - name: Install gdown
         run: pip install gdown
 
-      # 3️⃣ Descargar el ZIP desde Drive
+      # 3️⃣ Descargar tu ZIP desde Drive
       - name: Download project ZIP
         run: gdown https://drive.google.com/uc?id=13y6NUtJAtVFGLiF4YgHBGqM5LqCuvGBp -O autofinderapp.zip
 
@@ -23,20 +23,20 @@ jobs:
       - name: Unzip project
         run: unzip autofinderapp.zip -d ./autofinderapp
 
-      # 5️⃣ Usar Flutter preinstalado con acción comprobada
+      # 5️⃣ Instalar Flutter versión fija (3.13.0)
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '3.13.0' # versión estable que SÍ funciona en Actions
+          flutter-version: '3.13.0'
 
       # 6️⃣ Instalar dependencias
       - run: flutter pub get
         working-directory: ./autofinderapp
 
-      # 7️⃣ Build APK
+      # 7️⃣ Construir APK release
       - run: flutter build apk --release
         working-directory: ./autofinderapp
 
-      # 8️⃣ Subir APK
+      # 8️⃣ Subir APK como artifact
       - uses: actions/upload-artifact@v4
         with:
           name: autofinder-apk
