@@ -19,25 +19,28 @@ jobs:
       - name: Download project ZIP
         run: gdown https://drive.google.com/uc?id=13y6NUtJAtVFGLiF4YgHBGqM5LqCuvGBp -O autofinderapp.zip
 
-      # 4️⃣ Descomprimir
+      # 4️⃣ Descomprimir el proyecto
       - name: Unzip project
         run: unzip autofinderapp.zip -d ./autofinderapp
 
-      # 5️⃣ Instalar Flutter versión fija (3.13.0)
+      # 5️⃣ Instalar Flutter **versión fija que SÍ funciona**
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '3.13.0'
+          flutter-version: '3.13.0'  # NUNCA usar “stable” en v2
 
       # 6️⃣ Instalar dependencias
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
         working-directory: ./autofinderapp
 
       # 7️⃣ Construir APK release
-      - run: flutter build apk --release
+      - name: Build APK
+        run: flutter build apk --release
         working-directory: ./autofinderapp
 
       # 8️⃣ Subir APK como artifact
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: autofinder-apk
           path: ./autofinderapp/build/app/outputs/flutter-apk/app-release.apk
