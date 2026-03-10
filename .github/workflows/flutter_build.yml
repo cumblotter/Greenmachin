@@ -20,31 +20,34 @@ jobs:
           URL=$(cat download_link.txt)
           echo "DOWNLOAD_URL=$URL" >> $GITHUB_ENV
 
-      # 3️⃣ Descargar el ZIP del proyecto desde Google Drive
-      - name: Download project ZIP from Drive
-        run: wget -O autofinderapp.zip "$DOWNLOAD_URL"
+      # 3️⃣ Instalar gdown para descargar archivos grandes de Drive
+      - name: Install gdown
+        run: pip install gdown
 
-      # 4️⃣ Descomprimir el proyecto
+      # 4️⃣ Descargar el ZIP del proyecto desde Drive usando gdown
+      - name: Download project ZIP from Drive
+        run: gdown "$DOWNLOAD_URL" -O autofinderapp.zip
+
+      # 5️⃣ Descomprimir el proyecto
       - name: Unzip project
         run: unzip autofinderapp.zip -d .
 
-      # 5️⃣ Instalar Flutter
+      # 6️⃣ Instalar Flutter
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 'stable'
 
-      # 6️⃣ Instalar dependencias del proyecto
+      # 7️⃣ Instalar dependencias del proyecto
       - name: Install dependencies
         run: flutter pub get
 
-      # 7️⃣ Construir APK release
+      # 8️⃣ Construir APK release
       - name: Build APK
         run: flutter build apk --release
 
-      # 8️⃣ Subir APK como artifact (CORRECTO: upload-artifact@v4)
+      # 9️⃣ Subir APK como artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: autofinder-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-          
