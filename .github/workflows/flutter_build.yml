@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Clonar repositorio
-uses: actions/upload-artifact@v4
+      # 1️⃣ Clonar el repositorio
+      - uses: actions/checkout@v3
 
-      # 2️⃣ Leer URL del ZIP
+      # 2️⃣ Leer URL del ZIP desde download_link.txt
       - name: Read download URL
         id: get_url
         run: |
           URL=$(cat download_link.txt)
           echo "DOWNLOAD_URL=$URL" >> $GITHUB_ENV
 
-      # 3️⃣ Descargar el ZIP del proyecto
+      # 3️⃣ Descargar el ZIP del proyecto desde Google Drive
       - name: Download project ZIP from Drive
         run: wget -O autofinderapp.zip "$DOWNLOAD_URL"
 
@@ -33,7 +33,7 @@ uses: actions/upload-artifact@v4
         with:
           flutter-version: 'stable'
 
-      # 6️⃣ Instalar dependencias
+      # 6️⃣ Instalar dependencias del proyecto
       - name: Install dependencies
         run: flutter pub get
 
@@ -41,9 +41,10 @@ uses: actions/upload-artifact@v4
       - name: Build APK
         run: flutter build apk --release
 
-      # 8️⃣ Subir APK como artifact
+      # 8️⃣ Subir APK como artifact (CORRECTO: upload-artifact@v4)
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: autofinder-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          
