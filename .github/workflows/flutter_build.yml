@@ -1,8 +1,6 @@
 name: Build AutoFinder APK
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -13,41 +11,33 @@ jobs:
       # 1️⃣ Clonar el repositorio
       - uses: actions/checkout@v3
 
-      # 2️⃣ Leer URL del ZIP desde download_link.txt
-      - name: Read download URL
-        id: get_url
-        run: |
-          URL=$(cat download_link.txt)
-          echo "DOWNLOAD_URL=$URL" >> $GITHUB_ENV
-
-      # 3️⃣ Instalar gdown para descargar archivos grandes de Drive
+      # 2️⃣ Instalar gdown
       - name: Install gdown
         run: pip install gdown
 
-      # 4️⃣ Descargar el ZIP del proyecto desde Drive usando gdown
-      - name: Download project ZIP from Drive
-        run: gdown "$DOWNLOAD_URL" -O autofinderapp.zip
+      # 3️⃣ Descargar el ZIP desde Drive
+      - name: Download project ZIP
+        run: gdown https://drive.google.com/uc?id=13y6NUtJAtVFGLiF4YgHBGqM5LqCuvGBp -O autofinderapp.zip
 
-      # 5️⃣ Descomprimir el proyecto
+      # 4️⃣ Descomprimir
       - name: Unzip project
-        run: unzip autofinderapp.zip -d .
+        run: unzip autofinderapp.zip -d ./autofinderapp
 
-      # 6️⃣ Instalar Flutter
-      - uses: subosito/flutter-action@v2
+      # 5️⃣ Usar Flutter preinstalado con acción comprobada
+      - uses: subosito/flutter-action@v1
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.0' # versión estable que SÍ funciona en Actions
 
-      # 7️⃣ Instalar dependencias del proyecto
-      - name: Install dependencies
-        run: flutter pub get
+      # 6️⃣ Instalar dependencias
+      - run: flutter pub get
+        working-directory: ./autofinderapp
 
-      # 8️⃣ Construir APK release
-      - name: Build APK
-        run: flutter build apk --release
+      # 7️⃣ Build APK
+      - run: flutter build apk --release
+        working-directory: ./autofinderapp
 
-      # 9️⃣ Subir APK como artifact
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      # 8️⃣ Subir APK
+      - uses: actions/upload-artifact@v4
         with:
           name: autofinder-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: ./autofinderapp/build/app/outputs/flutter-apk/app-release.apk
