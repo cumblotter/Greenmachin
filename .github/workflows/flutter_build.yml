@@ -13,20 +13,23 @@ jobs:
 
       # 2️⃣ Instalar gdown para descargar tu ZIP de Drive
       - name: Install gdown
-        run: pip install gdown
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install gdown
 
       # 3️⃣ Descargar tu ZIP desde Drive
       - name: Download project ZIP
-        run: gdown https://drive.google.com/uc?id=13y6NUtJAtVFGLiF4YgHBGqM5LqCuvGBp -O autofinderapp.zip
+        run: |
+          gdown https://drive.google.com/uc?id=13y6NUtJAtVFGLiF4YgHBGqM5LqCuvGBp -O autofinderapp.zip
 
       # 4️⃣ Descomprimir el proyecto
       - name: Unzip project
         run: unzip autofinderapp.zip -d ./autofinderapp
 
-      # 5️⃣ Instalar Flutter **versión fija que SÍ funciona**
+      # 5️⃣ Instalar Flutter versión fija que funciona
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '3.13.0'  # NUNCA usar “stable” en v2
+          flutter-version: '3.13.0'
 
       # 6️⃣ Instalar dependencias
       - name: Install dependencies
